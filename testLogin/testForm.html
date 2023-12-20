@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form with Firebase</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        form {
+            max-width: 400px;
+            width: 100%;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 12px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<form id="dataForm">
+    <label for="name">Name:</label>
+    <input type="text" id="name" required>
+
+    <label for="age">Age:</label>
+    <input type="number" id="age" required>
+
+    <label for="aadharNo">Aadhar No. (12 digits):</label>
+    <input type="text" id="aadharNo" pattern="\d{12}" required>
+
+    <label for="pincode">Pincode (6 digits):</label>
+    <input type="text" id="pincode" pattern="\d{6}" required>
+
+    <button type="button" onclick="submitData()">Submit</button>
+</form>
+
+<script src="https://www.gstatic.com/firebasejs/7.14.6/firebase-app.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/7.14.6/firebase-auth.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/7.14.6/firebase-firestore.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/7.14.6/firebase-storage.js"></script>
+<script>
+    // Replace with your Firebase project configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyC7JdtKcgpTDm3Fc92_T1M_olZt4yItjrQ",
+        authDomain: "testform-502e0.firebaseapp.com",
+        databaseURL: "https://testform-502e0-default-rtdb.firebaseio.com",
+        projectId: "testform-502e0",
+        storageBucket: "testform-502e0.appspot.com",
+        messagingSenderId: "720381681053",
+        appId: "1:720381681053:web:13fea4db8d78e876ebe374",
+        measurementId: "G-1D103L61KK"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    function submitData() {
+        const name = document.getElementById('name').value;
+        const age = document.getElementById('age').value;
+        const aadharNo = document.getElementById('aadharNo').value;
+        const pincode = document.getElementById('pincode').value;
+
+        // Ensure aadharNo and pincode are valid
+        if (!validateAadharNo(aadharNo) || !validatePincode(pincode)) {
+            alert("Invalid Aadhar No. or Pincode. Please check and try again.");
+            return;
+        }
+
+        // Push data to Firebase
+        database.ref('users').push({
+            name: name,
+            age: age,
+            aadharNo: aadharNo,
+            pincode: pincode
+        });
+
+        alert("Data submitted successfully!");
+        // You can redirect or perform other actions after successful submission
+    }
+
+    function validateAadharNo(aadharNo) {
+        return /^\d{12}$/.test(aadharNo);
+    }
+
+    function validatePincode(pincode) {
+        return /^\d{6}$/.test(pincode);
+    }
+</script>
+
+</body>
+</html>
